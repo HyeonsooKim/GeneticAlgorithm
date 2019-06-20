@@ -32,5 +32,6 @@ PyCharm Community 다운로드
 ```
 > conda create -n python-env python=3.6
 > conda activate python-env
+> pip install matplotlib
 ```
 
