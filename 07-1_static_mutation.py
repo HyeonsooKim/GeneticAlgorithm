@@ -1,5 +1,5 @@
 import random
-import matplotlib.pyplot as plt
+import time
 
 
 class BinaryGeneticAlgorithm:
@@ -53,15 +53,28 @@ class BinaryGeneticAlgorithm:
                     chromosome2 = i
                     break
 
-        # pie chart 시각화
-        labels = [i[0] for i in self.chromosomes]
-        x = [fit[0]]
-        for i in range(1, len(fit)):
-            x.append(fit[i] - fit[i-1])
-        plt.pie(x, labels=labels, startangle=90)
-        plt.show()
-
         return self.chromosomes[chromosome1], self.chromosomes[chromosome2]
+
+    # 교차를 이용한 교배 연산
+    def single_point_crossover(self, chromosome1, chromosome2):
+        pivot = random.randint(1, len(chromosome1) - 1)
+        print('염색체1 교차점 : ', chromosome1[:pivot], chromosome1[pivot:])
+        print('염색체2 교차점 : ', chromosome2[:pivot], chromosome2[pivot:])
+        offspring = chromosome1[:pivot] + chromosome2[pivot:]
+        print('변이 전 자식 염색체 : ', offspring)
+        offspring = self.static_mutation(offspring, 0.0015)
+        print('변이 후 자식 염색체 : ', offspring)
+        return offspring
+
+    # 정적 변이 연산
+    def static_mutation(self, chromosome, p):
+        result = ''
+        for gene in chromosome:
+            r = random.random()
+            if r <= p:
+                gene = '1' if gene == '0' else '0'
+            result += gene
+        return result
 
     # 진화 수행
     def evolution(self):
@@ -77,4 +90,7 @@ if __name__ == "__main__":
     # 한 집단의 개체 수(4)
     BGA = BinaryGeneticAlgorithm(4)
     print(BGA)
-    print('선택된 염색체 : ' + str(BGA.roulette_wheel_selection()))
+    chromosome1, chromosome2 = BGA.roulette_wheel_selection()
+    print('선택된 부모 염색체 : ' + str(chromosome1) + ', ' + str(chromosome2))
+    offspring = BGA.single_point_crossover(chromosome1[0], chromosome2[0])
+    print('생성된 자식 염색체 : ' + str(offspring))

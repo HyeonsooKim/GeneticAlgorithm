@@ -4,12 +4,10 @@ import matplotlib.pyplot as plt
 
 class BinaryGeneticAlgorithm:
     # 랜덤으로 초기집단 염색체 생성 후 적합도 평가
-    def __init__(self, n, goal):
+    def __init__(self, n):
         self.n = n
-        self.goal = goal
         self.generation = 0
         self.chromosomes = []
-        self.ranking_rate = [40, 30, 20, 10]
 
         for i in range(n):
             chromosome = ''
@@ -27,7 +25,7 @@ class BinaryGeneticAlgorithm:
 
     # 토너먼트 선택 연산
     # 임의의 개체를 무작위로 선택하고 그 중에서 적합도가 가장 높은 개체 선택
-    def tournament_selectiont(self):
+    def tournament_selection(self):
         chromosome1, chromosome2 = 0, 0
         while chromosome1 == chromosome2:
             chromosome1 = random.randint(0, self.n - 1)
@@ -51,9 +49,9 @@ class BinaryGeneticAlgorithm:
 
 
 if __name__ == "__main__":
-    # 한 집단의 개체 수(4), 목표 적합도(15)
-    BGA = BinaryGeneticAlgorithm(4, 15)
+    # 한 집단의 개체 수(4)
+    BGA = BinaryGeneticAlgorithm(4)
     print(BGA)
-    result = BGA.tournament_selectiont()
+    result = BGA.tournament_selection()
     print('토너먼트 대진 : ' + str(result[:2]))
     print('선택된 염색체 : ' + str(result[-1:]))

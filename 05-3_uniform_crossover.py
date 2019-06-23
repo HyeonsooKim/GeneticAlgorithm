@@ -1,5 +1,5 @@
 import random
-import matplotlib.pyplot as plt
+import time
 
 
 class BinaryGeneticAlgorithm:
@@ -53,15 +53,18 @@ class BinaryGeneticAlgorithm:
                     chromosome2 = i
                     break
 
-        # pie chart 시각화
-        labels = [i[0] for i in self.chromosomes]
-        x = [fit[0]]
-        for i in range(1, len(fit)):
-            x.append(fit[i] - fit[i-1])
-        plt.pie(x, labels=labels, startangle=90)
-        plt.show()
-
         return self.chromosomes[chromosome1], self.chromosomes[chromosome2]
+
+    # 균등 교차 연산
+    def uniform_crossover(self, chromosome1, chromosome2, p):
+        offspring = ''
+        for i in range(len(chromosome1)):
+            r = random.random()
+            if r <= p:
+                offspring += chromosome1[i]
+            else:
+                offspring += chromosome2[i]
+        return offspring
 
     # 진화 수행
     def evolution(self):
@@ -77,4 +80,7 @@ if __name__ == "__main__":
     # 한 집단의 개체 수(4)
     BGA = BinaryGeneticAlgorithm(4)
     print(BGA)
-    print('선택된 염색체 : ' + str(BGA.roulette_wheel_selection()))
+    chromosome1, chromosome2 = BGA.roulette_wheel_selection()
+    print('선택된 부모 염색체 : ' + str(chromosome1) + ', ' + str(chromosome2))
+    offspring = BGA.uniform_crossover(chromosome1[0], chromosome2[0], 0.5)
+    print('생성된 자식 염색체 : ' + str(offspring))

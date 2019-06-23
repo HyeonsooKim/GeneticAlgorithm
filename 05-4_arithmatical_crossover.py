@@ -4,9 +4,8 @@ import time
 
 class BinaryGeneticAlgorithm:
     # 랜덤으로 초기집단 염색체 생성 후 적합도 평가
-    def __init__(self, n, goal):
+    def __init__(self, n):
         self.n = n
-        self.goal = goal
         self.generation = 0
         self.chromosomes = []
 
@@ -24,39 +23,41 @@ class BinaryGeneticAlgorithm:
     def evaluation(self, chromosome):
         return int(chromosome, 2)
 
-    # 목표 적합도에 도달했는지 검사
-    def goal_check(self):
-        return self.chromosomes[0][1] == self.goal
-
-    # 목표 세대에 도달했는지 검사
-    def generation_check(self):
-        return self.generation == 10
-
     # 룰렛 휠을 이용한 선택 연산
     # 각 염색체가 선택될 확률 = (염색체의 적합도 / 모든 염색체의 적합도 총합)
-    def roulette_wheel(self):
-        total_fit = sum([i[1] for i in self.chromosomes])
-        roulette_pos1, roulette_pos2 = 0, 0
-        while roulette_pos1 == roulette_pos2:
-            roulette_pos1 = random.randint(0, total_fit)
-            roulette_pos2 = random.randint(0, total_fit)
-
-        chromosome1 = None
-        chromosome2 = None
-        pos = 0
+    def roulette_wheel_selection(self):
+        fit = []
         for i in self.chromosomes:
-            pos += i[1]
-            if chromosome1 is None and roulette_pos1 <= pos:
+            if len(fit) == 0:
+                fit.append(i[1])
+            else:
+                fit.append(fit[-1] + i[1])
+        roulette_pos = 0
+        roulette_pos = random.randint(0, fit[-1])
+
+        chromosome1 = -1
+        chromosome2 = -1
+        pos = 0
+        for i in range(len(self.chromosomes)):
+            pos += self.chromosomes[i][1]
+            if roulette_pos <= pos:
                 chromosome1 = i
-            if chromosome2 is None and roulette_pos2 <= pos:
-                chromosome2 = i
+                break
 
-        return chromosome1, chromosome2
+        while chromosome2 == -1 or chromosome2 == chromosome1:
+            pos = 0
+            roulette_pos = random.randint(0, fit[-1])
+            for i in range(len(self.chromosomes)):
+                pos += self.chromosomes[i][1]
+                if roulette_pos <= pos:
+                    chromosome2 = i
+                    break
 
-    # 교차를 이용한 교배 연산
-    def crossover(self, chromosome1, chromosome2):
-        pivot = random.randint(0, len(chromosome1))
-        offspring = chromosome1[:pivot] + chromosome2[pivot:]
+        return self.chromosomes[chromosome1], self.chromosomes[chromosome2]
+
+    # 산술 교차 연산
+    def arithmatical_crossover(self, chromosome1, chromosome2):
+        offspring = bin((chromosome1[1] + chromosome2[1]) // 2)[2:]
         return offspring
 
     # 진화 수행
@@ -70,11 +71,10 @@ class BinaryGeneticAlgorithm:
 
 
 if __name__ == "__main__":
-    # 한 집단의 개체 수(4), 목표 적합도(15)
-    BGA = BinaryGeneticAlgorithm(4, 15)
+    # 한 집단의 개체 수(4)
+    BGA = BinaryGeneticAlgorithm(4)
     print(BGA)
-    chromosome1 = BGA.roulette_wheel()
-    chromosome2 = BGA.roulette_wheel()
-    offspring = BGA.crossover(chromosome1[0], chromosome2[0])
+    chromosome1, chromosome2 = BGA.roulette_wheel_selection()
     print('선택된 부모 염색체 : ' + str(chromosome1) + ', ' + str(chromosome2))
+    offspring = BGA.arithmatical_crossover(chromosome1, chromosome2)
     print('생성된 자식 염색체 : ' + str(offspring))
