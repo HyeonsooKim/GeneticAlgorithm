@@ -1,5 +1,6 @@
 import random
 import time
+import matplotlib.pyplot as plt
 
 
 class BinaryGeneticAlgorithm:
@@ -10,6 +11,7 @@ class BinaryGeneticAlgorithm:
         self.threshold = threshold
         self.cnt = 0
         self.chromosomes = []
+        self.fitlist = []
 
         for i in range(n):
             chromosome = ''
@@ -101,6 +103,29 @@ class BinaryGeneticAlgorithm:
             return True
         return False
 
+    def record_fit(self):
+        # self.fit_avg.append(sum([i[1] for i in self.chromosomes])/len(self.chromosomes))
+        self.fitlist.append(self.chromosomes[0][1])
+
+    def train(self):
+        print(self)
+        self.record_fit()
+        while True:
+            if self.evolution():
+                break
+            self.record_fit()
+            print(self)
+            time.sleep(0.01)
+
+        self.record_fit()
+        print('진화 종료')
+        print(self)
+
+    def showplot(self):
+        plt.figure(0)
+        plt.plot(self.fitlist)
+        plt.show()
+
     def __str__(self):
         ret = '=== ' + str(self.generation) + '세대 ===\n'
         ret += '(염색체, 적합도) : ' + str(self.chromosomes) + '\n'
@@ -110,12 +135,5 @@ class BinaryGeneticAlgorithm:
 if __name__ == "__main__":
     # 한 집단의 개체 수(4), 임계값(100)
     BGA = BinaryGeneticAlgorithm(4, 100)
-    print(BGA)
-    while True:
-        if BGA.evolution():
-            break
-        print(BGA)
-        time.sleep(0.01)
-
-    print('진화 종료')
-    print(BGA)
+    BGA.train()
+    BGA.showplot()
