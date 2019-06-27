@@ -62,7 +62,7 @@ class BinaryGeneticAlgorithm:
         print('염색체2 교차점 : ', chromosome2[:pivot], chromosome2[pivot:])
         offspring = chromosome1[:pivot] + chromosome2[pivot:]
         print('변이 전 자식 염색체 : ', offspring)
-        offspring = self.static_mutation(offspring, 0.0015)
+        offspring = self.static_mutation(offspring, 0.5)
         print('변이 후 자식 염색체 : ', offspring)
         return offspring
 
@@ -72,7 +72,11 @@ class BinaryGeneticAlgorithm:
         for gene in chromosome:
             r = random.random()
             if r <= p:
-                gene = '1' if gene == '0' else '0'
+                # gene = '1' if gene == '0' else '0'
+                if gene == '0':
+                    gene = '1'
+                else:
+                    gene = '0'
             result += gene
         return result
 
