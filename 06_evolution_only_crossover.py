@@ -80,14 +80,19 @@ class BinaryGeneticAlgorithm:
         self.fitlist.append(self.chromosomes[0][1])
 
     def train(self):
-        print(BGA)
-        BGA.record_fit()
+        print(self)
+        self.record_fit()
+
+        check = 0
 
         while True:
-            BGA.evolution()
-            BGA.record_fit()
-            print(BGA)
+            self.evolution()
+            self.record_fit()
+            print(self)
             time.sleep(0.01)
+            check += 1
+            if check == 300:
+                break
 
     def showplot(self):
         plt.figure(0)
