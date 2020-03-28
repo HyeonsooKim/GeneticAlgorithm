@@ -12,7 +12,7 @@
 
 ## 환경 설정
 
-1. conda 환경 생성
+1. conda 환경 생성 (이전에 환경을 만들었다며 2번부터)
 
 ```
 >>> conda create -n python-env python=3.6
